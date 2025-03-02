@@ -3,14 +3,9 @@ import { useState } from 'react'
 
  
 
-const handleclick =(props) =>{
-  return(
-    setVotes((prevVotes)=>({...prevVotes,}))
-    
-  )
-}
 
 const Vote =(props) =>{
+  
   return(
     <button onClick={props.onClick}>
       {props.text}
@@ -19,6 +14,7 @@ const Vote =(props) =>{
 }
 
 const Button = (props) => {
+
   return (
     <button onClick={props.onClick}>
     {props.text}
@@ -39,12 +35,27 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+  const [most, setMost] = useState(0)
   const [selected, setSelected] = useState(0)
-  const [votes, setVotes] = useState(()=>new Uint8Array(8))
+  const [votes, setVotes] = useState(new Array(8).fill(0))
+  const handleclick =() =>{
+
+    const copy = {...votes} 
+    console.log(copy)
+    console.log(votes)
+    copy[selected]+=1
+    const values = Object.values(copy); 
+    const maxValue = Math.max(...values); 
+    const maxIndices = Object.keys(copy).filter(key => copy[key] === maxValue);
+    const randomIndex = maxIndices[Math.floor(Math.random() * maxIndices.length)];
+
+    setVotes(copy)
+    setMost(randomIndex)
+  }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <div>
       has {votes[selected]} votes
@@ -52,10 +63,10 @@ const App = () => {
       
       <div>
       <Button text="next" onClick={() => {setSelected(Math.floor(Math.random()*7))}}/>
+        <Vote text ="vote"  onClick={()=>handleclick()}/>
       </div>
-      <div>
-        <Vote text ="vote" selected={selected} onClick={handleclick}/>
-      </div>
+      <h2>Anecdote with most votes</h2>
+      <p>{anecdotes[most]}</p>
     </div>
   )
 }
