@@ -23,6 +23,20 @@ const Button = (props) => {
     
   )
 }
+const handleclick =(setMost,setVotes,votes,selected) =>{
+
+  const copy = {...votes} 
+  console.log(copy)
+  console.log(votes)
+  copy[selected]+=1
+  const values = Object.values(copy); 
+  const maxValue = Math.max(...values); 
+  const maxIndices = Object.keys(copy).filter(key => copy[key] === maxValue);
+  const randomIndex = maxIndices[Math.floor(Math.random() * maxIndices.length)];
+
+  setVotes(copy)
+  setMost(randomIndex)
+}
 
 const App = () => {
   const anecdotes = [
@@ -38,20 +52,7 @@ const App = () => {
   const [most, setMost] = useState(0)
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Array(8).fill(0))
-  const handleclick =() =>{
-
-    const copy = {...votes} 
-    console.log(copy)
-    console.log(votes)
-    copy[selected]+=1
-    const values = Object.values(copy); 
-    const maxValue = Math.max(...values); 
-    const maxIndices = Object.keys(copy).filter(key => copy[key] === maxValue);
-    const randomIndex = maxIndices[Math.floor(Math.random() * maxIndices.length)];
-
-    setVotes(copy)
-    setMost(randomIndex)
-  }
+  
 
   return (
     <div>
@@ -63,7 +64,7 @@ const App = () => {
       
       <div>
       <Button text="next" onClick={() => {setSelected(Math.floor(Math.random()*7))}}/>
-        <Vote text ="vote"  onClick={()=>handleclick()}/>
+        <Vote text ="vote"  onClick={()=>handleclick(setMost,setVotes,votes,selected)}/>
       </div>
       <h2>Anecdote with most votes</h2>
       <p>{anecdotes[most]}</p>
