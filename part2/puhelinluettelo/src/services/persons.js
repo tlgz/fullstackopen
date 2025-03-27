@@ -18,7 +18,7 @@ const getAll = () => {
   }
   const deletefrom=(personId)=>{
     console.log(personId)
-    axios.delete(`${baseUrl}/${personId}`)
+    return axios.delete(`${baseUrl}/${personId}`)
   }
 
 export default { 

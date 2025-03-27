@@ -27,13 +27,34 @@ const Form=(props)=>{
   </>)
 }
 
-const handlebclick=(personId,personName,persons,setPersons)=>
+const handlebclick=(personId,personName,persons,setPersons, setCorrectMessage,seterrorMessage)=>
   {
     if (window.confirm(`Do you want to Delete user ${personName}?`)) {
+
+      
       
       personService
       .deletefrom(personId)
-      setPersons(persons.filter(person=>person.id!==personId))
+      .then(() => {setPersons(persons.filter(person=>person.id!==personId))
+        setCorrectMessage(
+          `Deleted ${personName}`
+        )
+        setTimeout(() => {
+          setCorrectMessage('')
+        }, 5000)})
+      .catch(error => {
+        
+        seterrorMessage(
+          `Information of '${personName}' has already been removed from server`
+        )
+        setTimeout(() => {
+          seterrorMessage('')
+        }, 5000)
+        setPersons(persons.filter(person=>person.id!==personId))
+      
+      })
+      
+    
     } 
 }
 
@@ -41,7 +62,7 @@ const Persons=(props)=>{
   
   return(<>{props.persons.map(person =>{
     if (props.newFilter===''){
-      return(<div key={person.name}>{person.name} {person.number} <button key={person.id} onClick={()=>handlebclick(person.id,person.name, props.persons,props.setPersons)}>Delete</button></div>)
+      return(<div key={person.name}>{person.name} {person.number} <button key={person.id} onClick={()=>handlebclick(person.id,person.name, props.persons,props.setPersons,props.setCorrectMessage,props.seterrorMessage)}>Delete</button></div>)
     }
     if(person.name.toUpperCase().startsWith(props.newFilter.toUpperCase())){
       
@@ -49,7 +70,17 @@ const Persons=(props)=>{
   }
   })}</>)
 }
+const Notification = ({ message,type }) => {
+  if (message === '') {
+    return null
+  }
 
+  return (
+    <div className={type === 'error' ? 'error' : 'correct'}>
+      {message}
+    </div>
+  )
+}
 
 
 
@@ -60,7 +91,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-
+  const [correctMessage, setCorrectMessage] = useState('')
+  const [errorMessage, seterrorMessage] = useState('')
 
   useEffect(() => {
     console.log('effect')
@@ -73,14 +105,13 @@ const App = () => {
       })
   }, [])
   
-
+  
   const addName=(event)=>{
     event.preventDefault()
+
     
     if (persons.some(name=>name.name===newName)){
-      if (persons.some(name=>name.number===newNumber)){
-        alert(`${newNumber} is already added to phonebook`)
-      }
+     
 
       if (window.confirm(` ${newName}is already added to phonebook, replace the old number with a new one?`)) {
 
@@ -95,7 +126,16 @@ const App = () => {
         personService
         .update(findid,nameObject)
         .then(returnedperson =>{setPersons(persons.map(person=>person.id !== findid ?person :returnedperson))})
+
+        setCorrectMessage(
+          `changed ${newName} number`
+        )
+        setTimeout(() => {
+          setCorrectMessage('')
+        }, 5000)
       }
+      
+        
 
       setNewName('')
       setNewNumber('')
@@ -121,6 +161,14 @@ const App = () => {
       setPersons(persons.concat(response))
       setNewName('')
     })
+
+    setCorrectMessage(
+      `Added ${newName}`
+    )
+    setTimeout(() => {
+      setCorrectMessage('')
+    }, 5000)
+
     setNewName('')
     setNewNumber('')
   }
@@ -145,6 +193,8 @@ const App = () => {
 
   return (
     <div>
+        <Notification message={correctMessage} type="success"/>
+        <Notification message={errorMessage} type="error"/>
 
       <h2>Phonebook</h2>
 
@@ -153,7 +203,7 @@ const App = () => {
       <Form addName={addName} newName={newName} handleOnChange={handleOnChange} newNumber={newNumber} handleOnChange2={handleOnChange2}/>
       <h2>Numbers</h2>
         
-      <Persons persons={persons} newFilter={newFilter} setPersons={setPersons}/>
+      <Persons persons={persons} newFilter={newFilter} setPersons={setPersons} setCorrectMessage={setCorrectMessage} seterrorMessage={seterrorMessage}/>
         
           
 
