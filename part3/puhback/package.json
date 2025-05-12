@@ -6,14 +6,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "node --watch index.js",
-     "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../puhelinluettelo && npm run build && @powershell Copy-Item dist -Recurse ../puhback",
+    "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../puhelinluettelo && npm run build && @powershell Copy-Item dist -Recurse ../puhback",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
+    "mongoose": "^8.13.2",
     "morgan": "^1.10.0"
   }
 }

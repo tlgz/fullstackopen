@@ -1,3 +1,7 @@
+
+require('dotenv').config()
+
+const Person = require('./models/person')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
@@ -8,25 +12,6 @@ app.use(express.json())
 app.use(express.static('dist'))
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :body'))
 
-let persons = [
-    
-        
-          {
-            id: "1",
-            name: "Arto Hellas",
-            number: "040-123456"
-          },
-          {
-            id: "2",
-            name: "Ada Lovelace",
-            number: "39-44-5323523"
-          },
-          {
-            id: "3",
-            name: "Dan Abramov",
-            number: "12-43-234345"
-          },
-  ]
 
   morgan.token('body', function (req) { return req.method === 'POST' ? JSON.stringify(req.body) : ' '})
 
@@ -36,8 +21,9 @@ let persons = [
   }
 
 app.get('/api/persons', (request, response) => {
+  Person.find({}).then(persons => {
     response.json(persons)
-    
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -86,26 +72,31 @@ response.send(`<div>Phonebook has info for ${t} people </div> ${d}`)
       
     }
     
-    if (persons.some(person=>person.name==body.name)) {
+    /*if (persons.some(person=>person.name==body.name)) {
       return response.status(400).json({ 
         error: 'name in list' 
       })
       
-    }
+    } */
   
-    const person = {
+    const person = new Person ({
       name: body.name,
       number: body.number,
       id: generateId(),
-    }
+    })
   
-    persons = persons.concat(person)
-  
-    response.json(person)
+    person.save().then(person=>response.json(person))
   })
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+
+
+
+
+
+
 
