@@ -98,7 +98,6 @@ const App = () => {
     personService
       .getAll('http://localhost:3001/api/persons')
       .then(response => {
-        
         setPersons(response)
         
       })
@@ -113,7 +112,7 @@ const App = () => {
      
 
       if (window.confirm(` ${newName}is already added to phonebook, replace the old number with a new one?`)) {
-        return //väliaikainen, koska ei tehty
+        
 
         const findid=persons.find(n => n.name === newName).id
 
