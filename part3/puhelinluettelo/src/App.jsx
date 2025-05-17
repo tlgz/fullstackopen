@@ -159,14 +159,24 @@ const App = () => {
     .then(response => {
       setPersons(persons.concat(response))
       setNewName('')
-    })
-
-    setCorrectMessage(
+      setCorrectMessage(
       `Added ${newName}`
     )
     setTimeout(() => {
       setCorrectMessage('')
     }, 5000)
+    }).catch(error => {
+      console.log(error.response.data)
+      seterrorMessage(
+        `${error.response.data.error}`
+      )
+      setTimeout(() => {
+      seterrorMessage('')
+      }, 5000)
+      
+    })
+
+    
 
     setNewName('')
     setNewNumber('')
