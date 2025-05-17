@@ -70,17 +70,19 @@ app.get('/api/persons/:id', (request, response) => {
   })
 
 
-/*app.get('/info', (request, response) => {
+app.get('/info', (request, response) => {
+    Person.find({}).then(persons => {
     const t= persons.length
     const d = new Date();
 response.send(`<div>Phonebook has info for ${t} people </div> ${d}`)
-  })*/
+}).catch(error => {error => next(error)})
+  })
 
   const generateId = ()=>{
     return(getRandomInt(10000000))
   }
 
-  app.post('/api/persons', (request, response) => {
+  app.post('/api/persons', (request, response, next) => {
     const body = request.body
     
    
@@ -111,7 +113,7 @@ response.send(`<div>Phonebook has info for ${t} people </div> ${d}`)
       id: generateId(),
     })
   
-    person.save().then(person=>response.json(person))
+    person.save().then(person=>response.json(person)).catch(error => next(error))
   })
 
 
@@ -127,6 +129,8 @@ response.send(`<div>Phonebook has info for ${t} people </div> ${d}`)
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
     }
   
     next(error)
