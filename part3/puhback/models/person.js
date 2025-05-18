@@ -28,7 +28,7 @@ const personSchema = new mongoose.Schema({
       validator: function(number) {
         return /\d{2,3}-\d+/.test(number)
       },
-      message: "Number not correct format"
+      message: 'Number not correct format'
     }
   }
 })

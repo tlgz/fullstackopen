@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "node --watch index.js",
+    "lint": "eslint .",
     "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../puhelinluettelo && npm run build && @powershell Copy-Item dist -Recurse ../puhback",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
