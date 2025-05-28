@@ -88,7 +88,7 @@ describe('return blogs ',()=>{
         assert.deepStrictEqual(result,
             {
                 author: "Edsger W. Dijkstra",
-                blogs: 17
+                likes: 17
             }
             )
       })

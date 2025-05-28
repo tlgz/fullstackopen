@@ -33,13 +33,42 @@ const mostBlogs =(blogs)=>{
     
 
     return result
+
+    
 }
 
 const mostLikes =(blogs)=>{
 
 
-    return 0
+    const list=blogs.reduce(myFunc,{})
 
+    function myFunc(total,num) {
+
+    if(num.author in total)
+    {
+      total[num.author]+=num.likes
+    }
+    else
+    {
+      total[num.author]=num.likes
+    }
+      console.log(total)
+     return total
+    }
+    
+    console.log(list)
+    const maxValue = Math.max(...Object.values(list));
+
+
+    const maxKey = Object.keys(list).find(key => list[key] === maxValue);
+
+    console.log(maxKey)
+
+    const result = {
+        author: maxKey,
+        likes: maxValue
+      };
+      return result
 }
 
 
