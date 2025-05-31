@@ -10,8 +10,19 @@ test('notes are returned as json', async () => {
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
-    .then(result=>console.log(result))
+    
 })
+
+
+test('notes have id not _id', async () => {
+  const response=await api.get('/api/blogs')
+    response.body.forEach(element => {
+      expect(element.id).toBeDefined()
+    })
+    
+    
+})
+
 
 after(async () => {
   await mongoose.connection.close()
