@@ -52,17 +52,17 @@ const mostLikes =(blogs)=>{
     {
       total[num.author]=num.likes
     }
-      console.log(total)
+      
      return total
     }
     
-    console.log(list)
+    
     const maxValue = Math.max(...Object.values(list));
 
 
     const maxKey = Object.keys(list).find(key => list[key] === maxValue);
 
-    console.log(maxKey)
+    
 
     const result = {
         author: maxKey,
