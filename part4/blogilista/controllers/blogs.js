@@ -41,4 +41,26 @@ blogsRouter.get('/', async (request, response) => {
     
   })
 
+blogsRouter.delete('/:id', async (request, response) => {
+
+  try {
+    await Blog.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  } catch (exception) {
+    return response.status(400).json({ error: exception.message})
+  }
+
+
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+
+
+  await Blog.findById(request.params.id)
+  console.log(request.params.id)
+//kesken
+  response.status(204).end()
+})
+
+
   module.exports=blogsRouter

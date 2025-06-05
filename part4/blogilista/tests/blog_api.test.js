@@ -129,6 +129,16 @@ test('no url or title returns 500', async () => {
 })
 
 
+test('test for single blog deletion', async () => {
+
+    await api.delete('/api/blogs/5a422b3a1b54a676234d17f9')
+    .expect(204)
+
+    const response2 = await api.get('/api/blogs')
+    assert.strictEqual(response2.body.length, 1)
+})
+
+
 
 after(async () => {
   await mongoose.connection.close()
