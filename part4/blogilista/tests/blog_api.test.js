@@ -131,12 +131,40 @@ test('no url or title returns 500', async () => {
 
 test('test for single blog deletion', async () => {
 
-    await api.delete('/api/blogs/5a422b3a1b54a676234d17f9')
+   const result= await api.delete('/api/blogs/5a422b3a1b54a676234d17f9')
     .expect(204)
+
+    
 
     const response2 = await api.get('/api/blogs')
     assert.strictEqual(response2.body.length, 1)
 })
+
+
+test('put works', async () => {
+
+  
+  const updatedblog=
+  { 
+
+    likes: 5
+  }
+
+    await api.put('/api/blogs/5a422b3a1b54a676234d17f9').send(updatedblog)
+    
+
+    const response3 = await api.get('/api/blogs')
+    
+
+    const contents1 = response3.body.filter(e => e.id=="5a422b3a1b54a676234d17f9")
+
+    assert.strictEqual(contents1[0].likes,5)
+
+
+   
+})
+
+
 
 
 
