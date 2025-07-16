@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blogs = require('../models/blogstyle')
+const User = require('../models/user')
 const api = supertest(app)
 
 const initialBlogs = [
@@ -24,13 +25,26 @@ const initialBlogs = [
             __v: 0
           },
 ]
-
+const bcrypt = require('bcrypt')
 beforeEach(async () => {
   await Blogs.deleteMany({})
   let BlogObject = new Blogs(initialBlogs[0])
   await BlogObject.save()
   BlogObject = new Blogs(initialBlogs[1])
   await BlogObject.save()
+  await User.deleteMany({})
+  
+     const saltRounds = 10
+     const password= "tlll"
+    const passwordHash = await bcrypt.hash(password, saltRounds)
+    
+      const user = new User({
+              username: "test",
+              name: "test",
+              passwordHash
+      })
+      await user.save()
+  
 })
 
 test('notes are returned as json', async () => {
