@@ -1,10 +1,10 @@
 const { identity } = require("lodash")
 const Blog =require("../models/blogstyle")
 const blogsRouter = require('express').Router()
-
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
-    const result = await Blog.find({})
+    const result = await Blog.find({}).populate("user")
     
     response.json(result)
     
@@ -31,11 +31,29 @@ blogsRouter.get('/', async (request, response) => {
     }
     
 
-    const blog = new Blog(request.body)
+    const user = await User.findById("6879319ce2d44df552d2790c")
+     if (!user) {
+    return response.status(400).json({ error: 'userId missing or not valid' })
+  }
+
+    const blog = new Blog({
+      url:request.body.url,
+      title:request.body.title,
+      author:request.body.author,
+      user: user._id,
+      likes:request.body.likes
+    }
+    
+
+      
+    
+    )
 
     
   
     const BlogSave = await blog.save()
+    user.blogs = user.blogs.concat(BlogSave._id)
+    await user.save()
     
     response.status(201).json(BlogSave)
     
