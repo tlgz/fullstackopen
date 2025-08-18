@@ -31,7 +31,7 @@ blogsRouter.get('/', async (request, response) => {
     }
     
 
-    const user = await User.findById("6879319ce2d44df552d2790c")
+    const user = await User.findById("68a32f8b641678d2b54ecc13")
      if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
   }
