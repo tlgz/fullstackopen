@@ -4,13 +4,7 @@ const blogsRouter = require('express').Router()
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
+
 
 
 blogsRouter.get('/', async (request, response) => {
@@ -39,11 +33,8 @@ blogsRouter.get('/', async (request, response) => {
       
       return response.status(400).json({ error: 'title missing' })
     }
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid' })
-    }
-    const user = await User.findById(decodedToken.id)
+    
+    const user = request.user
     
 
     
@@ -76,12 +67,29 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
 
+  
+
   try {
-    await Blog.findByIdAndDelete(request.params.id)
+
+    const user = request.user
+    const blog = await Blog.findById(request.params.id) 
+    if(!blog){
+      return response.status(400).json({error  : "blog not found"})
+    }
+    
+    if (user.id.toString() === request.user.toString() ) {
+      await Blog.findByIdAndDelete(request.params.id)
     response.status(204).end()
+    
+    } 
+    else{
+      return response.status(401).json({ error: 'unauthorized' })
+    } 
   } catch (exception) {
     return response.status(400).json({ error: exception.message})
-  }
+     }
+
+    
 
 
 })
