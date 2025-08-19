@@ -44,6 +44,14 @@ beforeEach(async () => {
               passwordHash
       })
       await user.save()
+      const response = await api
+        .post('/api/login')
+        .send({
+            username: 'test',
+            password: '123456'
+        })
+
+    token = response.body.token
   
 })
 
@@ -77,6 +85,7 @@ test('note posting works', async () => {
   }
   
   const response=await api.post('/api/blogs')
+  .set('Authorization', `Bearer ${token}`)
   .send(blog)
   .expect(201)
   .expect('Content-Type', /application\/json/)
@@ -103,6 +112,7 @@ test('note with empty likes returns 0', async () => {
   }
 
   const response=await api.post('/api/blogs')
+  .set('Authorization', `Bearer ${token}`)
   .send(blog)
   .expect(201)
   .expect('Content-Type', /application\/json/)
@@ -125,6 +135,7 @@ test('no url or title returns 500', async () => {
     likes: 5
   }
   const response=await api.post('/api/blogs')
+  .set('Authorization', `Bearer ${token}`)
   .send(blog)
   .expect(400)
   
@@ -137,6 +148,7 @@ test('no url or title returns 500', async () => {
     likes: 5
   }
   const responses=await api.post('/api/blogs')
+  .set('Authorization', `Bearer ${token}`)
   .send(blogs)
   .expect(400)
 
@@ -146,6 +158,7 @@ test('no url or title returns 500', async () => {
 test('test for single blog deletion', async () => {
 
    const result= await api.delete('/api/blogs/5a422b3a1b54a676234d17f9')
+   .set('Authorization', `Bearer ${token}`)
     .expect(204)
 
     
@@ -164,7 +177,9 @@ test('put works', async () => {
     likes: 5
   }
 
-    await api.put('/api/blogs/5a422b3a1b54a676234d17f9').send(updatedblog)
+    await api.put('/api/blogs/5a422b3a1b54a676234d17f9')
+    .set('Authorization', `Bearer ${token}`)
+    .send(updatedblog)
     
 
     const response3 = await api.get('/api/blogs')
