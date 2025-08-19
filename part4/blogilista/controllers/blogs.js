@@ -2,6 +2,16 @@ const { identity } = require("lodash")
 const Blog =require("../models/blogstyle")
 const blogsRouter = require('express').Router()
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 
 blogsRouter.get('/', async (request, response) => {
     const result = await Blog.find({}).populate("user")
@@ -29,9 +39,14 @@ blogsRouter.get('/', async (request, response) => {
       
       return response.status(400).json({ error: 'title missing' })
     }
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+    const user = await User.findById(decodedToken.id)
     
 
-    const user = await User.findById("68a32f8b641678d2b54ecc13")
+    
      if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
   }
